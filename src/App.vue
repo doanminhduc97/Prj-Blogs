@@ -24,10 +24,16 @@ export default {
       navigation: null
     };
   },
-  created() {
-    setTimeout(() => {
-      console.log('create', firebase.auth().currentUser)
+  async created() {
+    firebase.auth().onAuthStateChanged(user => {
+      this.$store.dispatch('user/updateUser', user)
+      
+      console.log('12312312', this.$store.getters['user/getUser'])
+      if (user) {
+        this.$store.dispatch('user/getCurrentUser')
+      }
     })
+    this.checkRouter()
   },
   mounted() {},
   methods: {

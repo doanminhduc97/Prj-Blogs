@@ -9,9 +9,40 @@
                     <ul v-show="!mobile">
                         <router-link class="link" :to="{name: 'Home'}">Home</router-link>
                         <router-link class="link" :to="{name: 'Blog'}">Blogs</router-link>
-                        <router-link class="link" :to="{name: 'NewPost'}">Create Post</router-link>
+                        <router-link class="link" :to="{name: 'CreatePost'}">Create Post</router-link>
                         <router-link class="link" :to="{name: 'Login'}">Login/Register</router-link>
                     </ul>
+                    <div class="profile" ref="profile" @click="toggleMenuProfile" v-if="user">
+                        <span> {{ profileInitial }} </span>
+                        <div class="profile-menu" v-show="showMenuProfile">
+                            <div class="info">
+                                <p class="initials"> {{ profileInitial }}</p>
+                                <div class="right">
+                                    <p>{{ profileFirstName }} {{ profileLastName }}</p>
+                                    <p>{{ profileUserName }}</p>
+                                    <p>{{ profileEmail }}</p>
+                                </div>
+                            </div>
+                            <div class="options">
+                                <div class="option">
+                                    <router-link class="option" :to="{name: 'Profile'}">
+                                        <userIcon class="icon"/>
+                                        <p>Profile</p>
+                                    </router-link>
+                                </div>
+                                <div class="option">
+                                    <router-link class="option" :to="{name: 'Admin'}">
+                                        <adminIcon class="icon"/>
+                                        <p>Admin</p>
+                                    </router-link>
+                                </div>
+                                <div @click="signOut" class="option">
+                                    <signOutIcon class="icon"/>
+                                    <p>Sign Out</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </nav>
             <menuIcon @click="toggleMobileNav" class="menu-icon" v-show="mobile"/>
@@ -19,7 +50,7 @@
                 <ul class="mobile-nav" v-show="mobileNav">
                     <router-link class="link" :to="{name: 'Home'}">Home</router-link>
                     <router-link class="link" :to="{name: 'Blog'}">Blogs</router-link>
-                    <router-link class="link" :to="{name: 'NewPost'}">Create Post</router-link>
+                    <router-link class="link" :to="{name: 'CreatePost'}">Create Post</router-link>
                     <router-link class="link" :to="{name: 'Login'}">Login/Register</router-link>
                 </ul>
             </transition>
@@ -27,16 +58,46 @@
     </div>
 </template>
 <script>
-import menuIcon from '../assets/Icons/bars-regular.svg';
+import menuIcon from '../assets/Icons/bars-regular.svg'
+import userIcon from '../assets/Icons/user-alt-light.svg'
+import adminIcon from '../assets/Icons/user-crown-light.svg'
+import signOutIcon from '../assets/Icons/sign-out-alt-regular.svg'
+import firebase from 'firebase/app'
+import 'firebase/auth'
+
 export default {
     components: {
-        menuIcon
+        menuIcon,
+        userIcon,
+        adminIcon,
+        signOutIcon
     },
     data () {
         return {
             mobile: null,
             mobileNav: false,
-            windownWidth: null
+            windownWidth: null,
+            showMenuProfile: false
+        }
+    },
+    computed: {
+        profileInitial () {
+            return this.$store.getters['user/getProfileInitials']
+        },
+        profileFirstName () {
+            return this.$store.getters['user/getProfileFirstName']
+        },
+        profileLastName () {
+            return this.$store.getters['user/getProfileLastName']
+        },
+        profileUserName () {
+            return this.$store.getters['user/getProfileUserName']
+        },
+        profileEmail () {
+            return this.$store.getters['user/getProfileEmail']
+        },
+        user () {
+            return this.$store.getters['user/getUser']
         }
     },
     created () {
@@ -55,9 +116,17 @@ export default {
         },
         toggleMobileNav () {
             this.mobileNav = !this.mobileNav
+        },
+        toggleMenuProfile (e) {
+            if (e.target === this.$refs.profile) {
+                this.showMenuProfile = !this.showMenuProfile
+            }
+        },
+        signOut () {
+            firebase.auth().signOut()
+            window.location.reload()
         }
     }
-
 }
 </script>
 <style lang="scss" scoped>
@@ -105,6 +174,88 @@ export default {
                     }
                     .link:last-child {
                         margin-right: 0;
+                    }
+                }
+
+                .profile {
+                    position: relative;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 40px;
+                    height: 40px;
+                    color: #fff;
+                    background-color: #303030;
+                    border-radius: 50%;
+
+                    span {
+                        pointer-events: none;
+                    }
+
+                    .profile-menu {
+                        position: absolute;
+                        top: 60px;
+                        right: 0;
+                        width: 250px;
+                        background-color: #303030;
+                        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+                        .info {
+                            display: flex;
+                            align-items: center;
+                            padding: 15px;
+                            border-bottom: 1px solid #fff;
+
+                            .initials {
+                                position: initial;
+                                width: 40px;
+                                height: 40px;
+                                background-color: #fff;
+                                color: #303030;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                border-radius: 50%;
+                            }
+                            .right {
+                                flex: 1;
+                                margin-left: 24px;
+
+                                p:nth-child(1) {
+                                    font-size: 14px;
+                                }
+
+                                p:nth-child(2),
+                                p:nth-child(3) {
+                                    font-size: 12px;
+                                }
+                            }
+                        }
+
+                        .options {
+                            padding: 15px;
+
+                            .option {
+                                text-decoration: none;
+                                color: #fff;
+                                display: flex;
+                                align-items: center;
+                                margin-bottom: 12px;
+
+                                .icon {
+                                    width: 18px;
+                                    height: auto;
+                                }
+                                p {
+                                    font-size: 14px;
+                                    margin-left: 12px;
+                                }
+                                &:last-child {
+                                    margin-bottom: 0px
+                                }
+                            }
+                        }
                     }
                 }
             }

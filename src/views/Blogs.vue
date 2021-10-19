@@ -12,7 +12,6 @@
 <script>
     import BlogCard from '../components/BlogCard'
 export default {
-    name: 'blogs',
     components: {
         BlogCard
     },

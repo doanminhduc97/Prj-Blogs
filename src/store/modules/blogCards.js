@@ -1,3 +1,5 @@
+import {SET_BLOG_CARDS} from '../mutation-types'
+
 const state = () => {
     return {
         sampleBlogCards: [
@@ -14,7 +16,7 @@ const getters = {
     }
 }
 const mutations = {
-    'SET_BLOG_CARDS' (state, blogs) {
+    [SET_BLOG_CARDS] (state, blogs) {
         state.sampleBlogCards = blogs
     }
 }

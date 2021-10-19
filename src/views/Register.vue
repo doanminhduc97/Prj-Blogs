@@ -44,7 +44,6 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 import db from '../firebase/firebaseInit'
 export default {
-    name: "Register",
     components: {
         email,
         password,

@@ -31,7 +31,6 @@ import Loading from '../components/Loading'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 export default {
-    name: "Login",
     components: {
         email,
         password,

@@ -23,7 +23,6 @@
 import BlogPost from '../components/BlogPost.vue'
 import BlogCard from '../components/BlogCard.vue'
 export default {
-  name: "Home",
   components: {
     BlogPost,
     BlogCard
