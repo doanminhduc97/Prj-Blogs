@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+
 import Home from "../views/Home.vue";
 import Blogs from "../views/Blogs.vue";
 import Login from "../views/Login.vue";
@@ -8,7 +9,10 @@ import ForgotPassword from "../views/ForgotPassword.vue";
 import Profile from "../views/Profile.vue";
 import Admin from "../views/Admin.vue";
 import CreatePost from "../views/CreatePost.vue";
-
+import PostPreview from "../views/PostPreview.vue";
+import ViewBlog from "../views/ViewBlog.vue";
+import EditBlog from "../views/EditBlog.vue";
+// import store from '../store'
 Vue.use(VueRouter);
 
 const routes = [
@@ -69,11 +73,35 @@ const routes = [
     }
   },
   {
-    path: "/createPost",
+    path: "/create-post",
     name: "CreatePost",
     component: CreatePost,
     meta: {
       title: 'Create Post'
+    }
+  },
+  {
+    path: "/post-preview",
+    name: "postPreview",
+    component: PostPreview,
+    meta: {
+      title: 'Post Preview'
+    }
+  },
+  {
+    path: "/view-blog/:blogId",
+    name: "ViewBlog",
+    component: ViewBlog,
+    meta: {
+      title: 'View Blog'
+    }
+  },
+  {
+    path: "/edit-blog/:blogId",
+    name: "EditBlog",
+    component: EditBlog,
+    meta: {
+      title: 'Edit Blog Post'
     }
   }
 ];
@@ -84,9 +112,15 @@ const router = new VueRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   document.title = `${to.meta.title} | FireBlog`
-  next();
+  // if (to.path === '/login') {
+  //   if (store.getters['user/getUser']) {
+  //     next('/')
+  //   }
+  //   return
+  // }
+  next()
 })
 
 export default router;

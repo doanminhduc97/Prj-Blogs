@@ -20,7 +20,7 @@
             </div>
             <div class="blog-actions">
                 <button @click="uploadBlog">Publish Blog</button>
-                <router-link class="router-button" :to="{name: 'postPreview'}">Post Preview</router-link>
+                <router-link class="router-button" :to="{name: 'BlogPreview'}">Post Preview</router-link>
             </div>
         </div>
     </div>
@@ -55,7 +55,9 @@ export default {
             },
             file: null,
             showHideModal: null,
-            loading: null
+            loading: null,
+            routeID: null,
+            currentBlog: null
         }
     },
     computed: {
@@ -84,6 +86,15 @@ export default {
                 this.$store.dispatch('createPost/setBlogHTML', payload)
             }
         }
+    },
+    async created() {
+      this.routeID = this.$route.params.blogId;
+      // console.log('this.routeID', this.routeID)
+      const res = await this.$store.dispatch('blogCards/getPost')
+      this.currentBlog = res.filter((post) => {
+      return post.blogID === this.routeID;
+    });
+    this.$store.dispatch('createPost/setStateBlog', this.currentBlog[0])
     },
     methods: {
       fileChange () {
@@ -114,7 +125,8 @@ export default {
           this.loading = false
         })
       },
-      uploadBlog () {
+      async updateBlog () {
+        const dataBase = await db.collection('blogPosts').doc(this.routeID)
         if (!this.blogTitle.length == 0 || !this.blogHTML.length == 0) {
           if (this.file) {
             this.loading = true
@@ -129,29 +141,28 @@ export default {
               this.loading = false
             }, async () => {
               const downloadURL = await docRef.getDownloadURL()
-              const timestamp = await Date.now()
-              const dataBase = await db.collection('blogPosts').doc()
 
-              await dataBase.set({
-                blogID: dataBase.id,
+              await dataBase.update({
                 blogHTML: this.blogHTML,
                 blogCoverPhoto: downloadURL,
                 blogCoverPhotoName: blogPhotoName,
                 blogTitle: this.blogTitle,
-                profileId: this.$store.getters['user/getProfileId'],
-                date: timestamp
               })
               this.loading = false
               this.$router.push({name: 'ViewBlog', params: {blogId: dataBase.id}})
             })
             return
           }
-          this.error = true
-          this.errorMsg = 'Please ensure Blog Title & Blog Post has been filled!'
-          setTimeout(() => {
-            this.error = false
-          }, 5000)
-          return
+          this.loading = true
+          await dataBase.update({
+            blogHTML: this.blogHTML,
+            blogTitle: this.blogTitle
+
+          })
+
+          await this.$store.dispatch('blogCards/getPost')
+          this.loading = false
+          this.$router.push({ name: 'ViewBlog', params: { blogId: dataBase.id}})
         }
         this.error = true
         this.errorMsg = 'Please ensure Blog Title & Blog Post has been filled!'

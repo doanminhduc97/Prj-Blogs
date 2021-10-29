@@ -1,18 +1,18 @@
 <template>
     <div class="blog-card">
         <div v-show="editPost" class="icons">
-            <div class="icon">
+            <div class="icon" @click="editBlog">
                 <Edit class="edit"/>
             </div>
-            <div class="icon">
+            <div class="icon" @click="showModal">
                 <Delete class="delete"/>
             </div>
         </div>
-        <img :src="require(`../assets/blogCards/${post.blogCoverPhoto}.jpg`)" alt="">
+        <img :src="post.blogCoverPhoto" alt="">
         <div class="info">
             <h4>{{ post.blogTitle }}</h4>
-            <h6>Posted on: {{ post.blogDate }}</h6>
-            <router-link class="link" to="#"> View The Post <Arrow class="arrow"/> </router-link>
+            <h6>Posted on: {{ new Date(post.blogDate).toLocaleString('en-us', { dateStyle: 'long'}) }}</h6>
+            <router-link class="link" :to="{name: 'ViewBlog', params: {blogId: post.blogID}}"> View The Post <Arrow class="arrow"/> </router-link>
         </div>
     </div>
 </template>
@@ -20,6 +20,7 @@
 import Arrow from '../assets/Icons/arrow-right-light.svg';
 import Edit from '../assets/Icons/edit-regular.svg';
 import Delete from '../assets/Icons/trash-regular.svg';
+
 export default {
     components: {
         Arrow,
@@ -39,6 +40,15 @@ export default {
         return {
             
         }
+    },
+    methods: {
+      showModal () {
+        // this.$store.dispatch('blogCards/deletePost', this.post.blogID)
+        this.$emit('show-modal', this.post.blogID)        
+      },
+      editBlog () {
+        this.$router.push({name: 'EditBlog', params: {blogId: this.post.blogID}})
+      }
     },
 }
 </script>

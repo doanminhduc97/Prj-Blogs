@@ -5,26 +5,62 @@
                 <span>Toggle Editing Post</span>
                 <input type="checkbox" v-model="editPost" />
             </div>
-            <blog-card :edit-post="editPost" :post="post" v-for="(post, index) in sampleBlogCards" :key="index"/>
+            <blog-card 
+              :edit-post="editPost" :post="post" v-for="(post, index) in sampleBlogCards" 
+              :key="index" 
+              @show-modal="showModal"
+            />
         </div>
+        <modal-confirm 
+          v-if="showHideModal"
+          :modalMessage="message"
+          @close-modal="closeModal"
+          @delete-post = "deletePost"
+          />
+          <loading v-show="loading"/>
     </div>
 </template>
 <script>
-    import BlogCard from '../components/BlogCard'
+import BlogCard from '../components/BlogCard'
+import ModalConfirm from '../components/ModalConfirm'
+import Loading from '../components/Loading'
+
 export default {
     components: {
-        BlogCard
+        BlogCard,
+        ModalConfirm,
+        Loading
     },
     data() {
         return {
-            editPost: null
+            editPost: null,
+            showHideModal: false,
+            blogId: null,
+            message: 'Are you sure you want to delete the post?',
+            loading: false
         }
     },
     computed: {
         sampleBlogCards () {
-            return this.$store.getters['blogCards/getListBlogs']
+            return this.$store.getters['blogCards/getBlogPost']
         }
-    }
+    },
+    methods: {
+      closeModal () {
+          this.showHideModal = false
+        },
+        showModal (blogId) {
+          this.showHideModal = true
+          this.blogId = blogId
+          console.log('blogId', this.blogId)
+        },
+        async deletePost () {
+          this.showHideModal = false
+          this.loading = true
+          await this.$store.dispatch('blogCards/deletePost', this.blogId)
+          this.loading = false
+        }
+    },
 }
 </script>
 <style lang="scss" scoped>

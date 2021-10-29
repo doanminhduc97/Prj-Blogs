@@ -53,12 +53,10 @@ export default {
                 this.$router.push({name: 'Home'})
                 this.error = false
                 this.errorMsg = ''
-                console.log(firebase.auth().currentUser.uid)
                 this.loading = false
             }).catch(error => {
                 this.error = true
                 this.errorMsg = error.message
-                console.log('vào catch')
                 this.loading = false
             })
             return

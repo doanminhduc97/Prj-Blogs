@@ -1,7 +1,10 @@
 import { 
     TOGGLE_EDIT_POST,
     SET_BLOG_HTML,
-    SET_BLOG_TITLE
+    SET_BLOG_TITLE,
+    SET_BLOG_PHOTO_NAME,
+    SET_BLOG_PHOTO_FILE_URL,
+    SET_STATE_BLOG
 } from '../mutation-types'
 
 const state = () => {
@@ -24,6 +27,9 @@ const getters = {
     getBlogHTML: state => {
         return state.blogHTML
     },
+    getBlogPhotoName: state => {
+        return state.blogPhotoName
+    }
 }
 const mutations = {
     [TOGGLE_EDIT_POST] (state, payload) {
@@ -34,6 +40,18 @@ const mutations = {
     },
     [SET_BLOG_TITLE] (state, payload) {
         state.blogTitle = payload
+    },
+    [SET_BLOG_PHOTO_NAME] (state, payload) {
+        state.blogPhotoName = payload
+    },
+    [SET_BLOG_PHOTO_FILE_URL] (state, payload) {
+        state.blogPhotoFileURL = payload
+    },
+    [SET_STATE_BLOG] (state, payload) {
+        state.blogTitle = payload.blogTitle
+        state.blogHTML = payload.blogHTML
+        state.blogPhotoFileURL = payload.blogCoverPhoto
+        state.blogPhotoName = payload.blogCoverPhotoName
     }
 }
 const actions = {
@@ -42,6 +60,15 @@ const actions = {
     },
     setBlogTitle (context, payload) {
         context.commit(SET_BLOG_TITLE, payload)
+    },
+    fileNameChange (context, payload) {
+        context.commit(SET_BLOG_PHOTO_NAME, payload)
+    },
+    createFileURL (context, payload) {
+        context.commit(SET_BLOG_PHOTO_FILE_URL, payload)
+    },
+    setStateBlog (context, payload) {
+        context.commit(SET_STATE_BLOG, payload)
     }
 }
 

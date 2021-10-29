@@ -2,7 +2,10 @@
     <div class="modal">
         <div class="modal-content">
             <p class="modal-content">{{ modalMessage }}</p>
-            <button @click="closeModal">Close</button>
+            <div class="button">
+                <button @click="deletePost">Yes</button>
+                <button @click="closeModal">No</button>
+            </div>
         </div>
     </div>
 </template>
@@ -25,6 +28,9 @@ export default {
     methods: {
         closeModal() {
             this.$emit('close-modal');
+        },
+        deletePost () {
+            this.$emit('delete-post');
         }
     },
 }
@@ -53,8 +59,13 @@ export default {
     p {
         text-align: center;
     }
-    button {
+    .button {
+        display: block;
         align-self: center;
+
+        button {
+            margin: 15px;
+        }
     }
 }
 </style>

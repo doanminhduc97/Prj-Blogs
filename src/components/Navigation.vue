@@ -9,8 +9,8 @@
                     <ul v-show="!mobile">
                         <router-link class="link" :to="{name: 'Home'}">Home</router-link>
                         <router-link class="link" :to="{name: 'Blog'}">Blogs</router-link>
-                        <router-link class="link" :to="{name: 'CreatePost'}">Create Post</router-link>
-                        <router-link class="link" :to="{name: 'Login'}">Login/Register</router-link>
+                        <router-link v-if="profileUserName" class="link" :to="{name: 'CreatePost'}">Create Post</router-link>
+                        <router-link v-if="!profileUserName" class="link" :to="{name: 'Login'}">Login/Register</router-link>
                     </ul>
                     <div class="profile" ref="profile" @click="toggleMenuProfile" v-if="user">
                         <span> {{ profileInitial }} </span>

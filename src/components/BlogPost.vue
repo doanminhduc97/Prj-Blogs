@@ -3,20 +3,20 @@
         <div class="blog-content">
             <div>
                 <h2 v-if="post.welcomeScreen">{{ post.title }}</h2>
-                <h2 v-else>{{ post.title }}</h2>
+                <h2 v-else>{{ post.blogTitle }}</h2>
                 <p v-if="post.welcomeScreen">{{ post.blogPost }}</p>
-                <p class="content-preview" v-else>{{ post.blogHTML }}</p>
-                <router-link class="link link-right" to="#" v-if="post.welcomeScreen">
+                <p class="content-preview" v-else v-html="post.blogHTML"></p>
+                <router-link class="link link-right" :to="{name: 'Login'}" v-if="!profileUserName">
                     Login/Register<Arrow class="arrow arrow-light"/>
                 </router-link>
-                <router-link class="link link-right" to="#" v-else>
+                <router-link class="link link-right" :to="{name: 'ViewBlog', params: {blogId: post.blogID}}" v-if="!post.welcomeScreen">
                     View The Post<Arrow class="arrow arrow-light"/>
                 </router-link>
             </div>
         </div>
         <div class="blog-photo">
             <img v-if="post.welcomeScreen" :src="require(`../assets/blogPhotos/${post.photo}.jpg`)" alt="">
-            <img v-else :src="require(`../assets/blogPhotos/${post.blogCoverColor}.jpg`)" alt="">
+            <img v-else :src="post.blogCoverPhoto" alt="">
         </div>
     </div>
 </template>
@@ -39,6 +39,9 @@ export default {
     computed: {
       user () {
         return this.$store.getters['user/getUser']
+      },
+      profileUserName () {
+        return this.$store.getters['user/getProfileUserName']
       }
     }
 }
